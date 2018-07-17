@@ -24,7 +24,7 @@ class TestParser(unittest.TestCase):
             ]
         """
 
-        expected = "<h3>Title #1</h3><div>Hello, World 1!</div><h2>Title #2</h2><p>Hello, World 2!</p><h1>Title #3</h1><b>Hello, World 3!</b>"
+        expected = "<ul><li><h3>Title #1</h3><div>Hello, World 1!</div></li><li><h2>Title #2</h2><p>Hello, World 2!</p></li><li><h1>Title #3</h1><b>Hello, World 3!</b></li></ul>"
 
         json2html_parser = Parser()
         parsed = json2html_parser.parse(json_doc)
