@@ -1,6 +1,6 @@
 import unittest
 
-from ..parser import Parser, Node
+from ..parser import Parser, Node, ListNode
 
 
 class TestParser(unittest.TestCase):
