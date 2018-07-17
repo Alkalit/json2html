@@ -22,12 +22,21 @@ class Node:
 
 class Parser:
 
+    ul_tmp = '<ul>{content}</ul>'
+    li_tmp = '<li>{content}</li>'
+
     def parse(self, json_doc):
 
         # import ipdb; ipdb.set_trace()
         parsed = json.loads(json_doc, object_hook=self._object_hook)
 
-        return ''.join(parsed)
+        li_list = []
+
+        for item in parsed:
+            li_item = self.li_tmp.format(content=item)
+            li_list.append(li_item)
+
+        return self.ul_tmp.format(content=''.join(li_list))
 
     def _object_hook(self, obj):
 
