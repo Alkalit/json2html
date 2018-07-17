@@ -3,17 +3,21 @@ import json
 
 class Node:
 
-    title_tmp = '<h1>{}</h1>'
-    body_tmp = '<p>{}</p>'
+    tag_tmp = '<{tag}>{content}</{tag}>'
 
-    def __init__(self, title, body):
+    def __init__(self, dict_of_tags):
 
-        self.title = title
-        self.body = body
+        self.dict_of_tags = dict_of_tags
 
     def render(self):
 
-        return ''.join([self.title_tmp.format(self.title), self.body_tmp.format(self.body)])
+        arr = []
+
+        for tag, content in self.dict_of_tags.items():
+            snippet = self.tag_tmp.format(tag=tag, content=content)
+            arr.append(snippet)
+
+        return ''.join(arr)
 
 
 class Parser:
@@ -27,7 +31,7 @@ class Parser:
 
     def _object_hook(self, obj):
 
-        node = Node(**obj)
+        node = Node(obj)
         return node.render() # NOTE лучше возвращать саму ноду и потом вручную отрендерить в списке. При этом можно делать местные проверки.
 
 
