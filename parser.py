@@ -61,6 +61,10 @@ class Node:
         arr = []
 
         for tag, content in self.dict_of_tags.items():
+
+            if  isinstance(content, ListNode):
+                content = content.render()
+
             snippet = self.tag_tmp.format(tag=tag, content=content)
             arr.append(snippet)
 
