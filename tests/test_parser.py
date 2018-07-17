@@ -5,7 +5,48 @@ from ..parser import Parser, Node, ListNode
 
 class TestParser(unittest.TestCase):
 
-    def test_markup(self):
+    def test_render_with_a_simple_object(self):
+
+        json_doc = """
+            [
+                {
+                    "div": "div 1"
+                }
+            ]
+        """
+
+        expected = "<ul><li><div>div 1</div></li></ul>"
+
+        json2html_parser = Parser()
+        parsed = json2html_parser.parse(json_doc)
+
+        self.assertEqual(expected, parsed)
+
+    def test_render_with_nested_list(self):
+
+        json_doc = """
+            [
+                {
+                    "span": "Title #1",
+                    "content": [
+                        {
+                            "p": "Example 1",
+                            "header": "header 1"
+                        }
+                    ]
+
+                }
+            ]
+        """
+
+        expected = "<ul><li><span>Title #1</span><content><ul><li><p>Example 1</p><header>header 1</header></li></ul></content></li></ul>"
+
+        json2html_parser = Parser()
+        parsed = json2html_parser.parse(json_doc)
+
+        self.assertEqual(expected, parsed)
+
+    def test_render_with_a_few_objects(self):
 
         json_doc = """
             [
