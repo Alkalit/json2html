@@ -47,3 +47,17 @@ class TestNode(unittest.TestCase):
         expected = '<title>Foo</title><body>Bar</body>'
 
         self.assertEqual(rendered, expected)
+
+
+class TestListNode(unittest.TestCase):
+
+    def test_node_can_render_it_self(self):
+
+        node1 = Node({"h1":"Hi there!", "h2":"How do you do?"})
+        node2 = Node(dict(h3='a title', div='a content'))
+
+        list_node = ListNode([node1, node2])
+        rendered = list_node.render()
+        expected = '<ul><li><h1>Hi there!</h1><h2>How do you do?</h2></li><li><h3>a title</h3><div>a content</div></li></ul>'
+
+        self.assertEqual(rendered, expected)
