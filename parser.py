@@ -28,7 +28,7 @@ class Parser:
     def _object_hook(self, obj):
 
         node = Node(**obj)
-        return node.render()
+        return node.render() # NOTE лучше возвращать саму ноду и потом вручную отрендерить в списке. При этом можно делать местные проверки.
 
 
 def main():
