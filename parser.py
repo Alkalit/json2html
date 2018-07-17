@@ -1,4 +1,5 @@
 import json
+import abc
 
 from collections import OrderedDict
 
@@ -27,7 +28,18 @@ class MyCustomDecoder(json.JSONDecoder):
         return self.list_type(values), end
 
 
-class ListNode:
+class BaseNode(abc.ABC):
+
+    """
+    Просто показываем что ноды это родственные классы.
+    """
+
+    @abc.abstractmethod
+    def render(self):
+        pass
+
+
+class ListNode(BaseNode):
 
     ul_tmp = '<ul>{content}</ul>'
     li_tmp = '<li>{content}</li>'
@@ -48,7 +60,7 @@ class ListNode:
         return self.ul_tmp.format(content=''.join(li_list))
 
 
-class Node:
+class Node(BaseNode):
 
     tag_tmp = '<{tag}>{content}</{tag}>'
 
