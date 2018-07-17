@@ -8,6 +8,21 @@ class TestParser(unittest.TestCase):
     def test_render_with_a_simple_object(self):
 
         json_doc = """
+            {
+                "p": "hello1"
+            }
+        """
+
+        expected = "<p>hello1</p>"
+
+        json2html_parser = Parser()
+        parsed = json2html_parser.parse(json_doc)
+
+        self.assertEqual(expected, parsed)
+
+    def test_render_with_a_list_with_a_simple_object(self):
+
+        json_doc = """
             [
                 {
                     "div": "div 1"
@@ -40,6 +55,46 @@ class TestParser(unittest.TestCase):
         """
 
         expected = "<ul><li><span>Title #1</span><content><ul><li><p>Example 1</p><header>header 1</header></li></ul></content></li></ul>"
+
+        json2html_parser = Parser()
+        parsed = json2html_parser.parse(json_doc)
+
+        self.assertEqual(expected, parsed)
+
+    def test_render_with_deep_nesting(self):
+
+        json_doc = """
+            [
+                {
+                    "h1": "Title #1",
+                    "div": [
+                        {
+                            "div": [
+                                {
+                                    "h2": "Title #2",
+                                    "div": [
+                                        {
+                                            "div": [
+                                                {
+                                                    "h3": "Title #3",
+                                                    "div": [
+                                                        {
+                                                            "p": "some text"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        """
+
+        expected = "<ul><li><h1>Title #1</h1><div><ul><li><div><ul><li><h2>Title #2</h2><div><ul><li><div><ul><li><h3>Title #3</h3><div><ul><li><p>some text</p></li></ul></div></li></ul></div></li></ul></div></li></ul></div></li></ul></div></li></ul>"
 
         json2html_parser = Parser()
         parsed = json2html_parser.parse(json_doc)
