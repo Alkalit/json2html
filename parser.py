@@ -29,3 +29,15 @@ class Parser:
 
         node = Node(**obj)
         return node.render()
+
+
+def main():
+
+    json_file = open('source.json', 'r')
+
+    parser = Parser()
+    print(parser.parse(json_file.read()))
+
+
+if __name__ == '__main__':
+    main()
