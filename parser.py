@@ -1,23 +1,31 @@
 import json
 
 
-class Parser:
+class Node:
 
     title_tmp = '<h1>{}</h1>'
     body_tmp = '<p>{}</p>'
 
+    def __init__(self, title, body):
+
+        self.title = title
+        self.body = body
+
+    def render(self):
+
+        return ''.join([self.title_tmp.format(self.title), self.body_tmp.format(self.body)])
+
+
+class Parser:
+
     def parse(self, json_doc):
 
-        parsed = json.loads(json_doc)
+        # import ipdb; ipdb.set_trace()
+        parsed = json.loads(json_doc, object_hook=self._object_hook)
 
-        html_tags = []
+        return ''.join(parsed)
 
-        for obj in parsed:
-            title = obj['title']
-            html_tags.append(self.title_tmp.format(title))
+    def _object_hook(self, obj):
 
-            body = obj['body']
-            html_tags.append(self.body_tmp.format(body))
-
-
-        return ''.join(html_tags)
+        node = Node(**obj)
+        return node.render()
