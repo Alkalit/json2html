@@ -24,7 +24,7 @@ class TestParser(unittest.TestCase):
             ]
         """
 
-        expected = "<h3>Title #1</h3><div>Hello, World 1!</div><h2>Title #2</h2><p>Hello, World 2!</p><h1>Title #2</h1><b>Hello, World 2!</b>"
+        expected = "<h3>Title #1</h3><div>Hello, World 1!</div><h2>Title #2</h2><p>Hello, World 2!</p><h1>Title #3</h1><b>Hello, World 3!</b>"
 
         json2html_parser = Parser()
         parsed = json2html_parser.parse(json_doc)
@@ -39,11 +39,11 @@ class TestNode(unittest.TestCase):
 
     def test_node_can_render_it_self(self):
 
-        args = dict(title='Foo', body='Bar')
+        tags = dict(title='Foo', body='Bar')
 
-        node = Node(**args)
+        node = Node(tags)
 
         rendered = node.render()
-        expected = '<h1>Foo</h1><p>Bar</p>'
+        expected = '<title>Foo</title><body>Bar</body>'
 
         self.assertEqual(rendered, expected)
