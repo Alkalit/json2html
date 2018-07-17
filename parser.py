@@ -1,6 +1,6 @@
 import json
 
-# TODO ordered dict?
+from collections import OrderedDict
 
 
 class MyCustomDecoder(json.JSONDecoder):
@@ -71,14 +71,16 @@ class Parser:
 
     def parse(self, json_doc):
 
-        parsed = json.loads(json_doc, cls=MyCustomDecoder, object_hook=self._object_hook, list_type=ListNode)
+        parsed = json.loads(json_doc, cls=MyCustomDecoder, object_pairs_hook=self._object_hook, list_type=ListNode)
 
         # import ipdb; ipdb.set_trace()
         return parsed.render()
 
     def _object_hook(self, obj):
 
-        node = Node(obj)
+        # import ipdb; ipdb.set_trace()
+
+        node = Node(OrderedDict(obj)) # XXX или вынести это в саму ноду?
         return node#.render() # NOTE лучше возвращать саму ноду и потом вручную отрендерить в списке. При этом можно делать местные проверки.
 
 
