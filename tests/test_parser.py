@@ -5,6 +5,38 @@ from ..parser import Parser, Node, ListNode
 
 class TestParser(unittest.TestCase):
 
+
+    def test_escape_inner_html(self):
+
+        json_doc = """
+            {
+                "p": "a <a>link</a>"
+            }
+        """
+
+        expected = "<p>a &lt;a&gt;link&lt;/a&gt;</p>"
+
+        json2html_parser = Parser()
+        parsed = json2html_parser.parse(json_doc)
+
+        self.assertEqual(expected, parsed)
+
+    def test_render_an_object_with_css_keys(self):
+
+        json_doc = """
+            {
+                "p.my-class#my-id": "hello",
+                "p.my-class1.my-class2": "example"
+            }
+        """
+
+        expected = """<p class="my-class" id="my-id">hello</p><p class="my-class1 my-class2">example</p>"""
+
+        json2html_parser = Parser()
+        parsed = json2html_parser.parse(json_doc)
+
+        self.assertEqual(expected, parsed)
+
     def test_render_with_a_simple_object(self):
 
         json_doc = """
