@@ -1,8 +1,55 @@
 import json
 import abc
+import re
 
 from html import escape
 from collections import OrderedDict
+
+TAG = r'^[a-z][a-z_0-9]*'
+CSS_SELECTOR = r"[.#][a-z][a-z0-9_-]*"
+
+tag_regex = re.compile(TAG)
+css_selector_regex = re.compile(CSS_SELECTOR)
+
+def parse_key(key):
+
+    # Не гуру регулярок, поэтому не смог написать одну которая делает всё.
+
+    result = {}
+
+    matched_tag = tag_regex.match(key)
+
+    if not matched_tag:
+        raise Exception("The key \"{key}\" is an invalid key".format(key))
+
+    tag = matched_tag.group()
+
+    # далее ищем классы и айдишники
+    key = key[matched_tag.end():]
+
+    selectors = css_selector_regex.finditer(key)
+
+    ids = []
+    classes = []
+
+    for matcher in selectors:
+        select = matcher.group()
+        if select.startswith('.'):
+            classes.append(select[1:])
+        elif select.startswith('#'):
+            ids.append(select[1:])
+        else:
+            pass # TODO should I deal with it?
+
+    # import ipdb; ipdb.set_trace()
+    result['tag'] = tag
+
+    if classes:
+        result['classes'] = classes
+    if ids:
+        result['ids'] = ids
+
+    return result
 
 
 class MyCustomDecoder(json.JSONDecoder):
