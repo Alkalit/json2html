@@ -13,7 +13,7 @@ css_selector_regex = re.compile(CSS_SELECTOR)
 
 def parse_key(key):
 
-    # Не гуру регулярок, поэтому не смог написать одну которая делает всё.
+    # Не гуру регулярок, поэтому парсим полу-вручную
 
     result = {}
 
@@ -34,6 +34,7 @@ def parse_key(key):
 
     for matcher in selectors:
         select = matcher.group()
+
         if select.startswith('.'):
             classes.append(select[1:])
         elif select.startswith('#'):
@@ -110,7 +111,7 @@ class ListNode(BaseNode):
 
 class Node(BaseNode):
 
-    tag_tmp = '<{tag}>{content}</{tag}>'
+    tag_tmp = '<{opening_tag}>{content}</{closing_tag}>'
 
     def __init__(self, dict_of_tags):
 
@@ -128,8 +129,28 @@ class Node(BaseNode):
             elif isinstance(content, str):
                 content = escape(content)
 
-            snippet = self.tag_tmp.format(tag=tag, content=content)
+            # import ipdb; ipdb.set_trace()
+            parsed_tag = parse_key(tag)
+
+            if parsed_tag['tag'] != tag:
+                ids = parsed_tag.get('ids', '')
+                classes = parsed_tag.get('classes', '')
+
+                if classes:
+                    classes = "class=\"{}\"".format(" ".join(classes))
+
+                if ids:
+                    ids = "id=\"{}\"".format(" ".join(ids))
+
+                closing_tag = parsed_tag['tag']
+                opening_tag = " ".join([closing_tag, classes, ids])
+            else:
+                opening_tag = tag
+                closing_tag = tag
+
+            snippet = self.tag_tmp.format(opening_tag=opening_tag, content=content, closing_tag=closing_tag)
             arr.append(snippet)
+
 
         return ''.join(arr)
 
