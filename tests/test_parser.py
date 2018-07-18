@@ -191,13 +191,13 @@ class TestListNode(unittest.TestCase):
 
     def test_key_parser_with_no_identety(self):
 
-        key = 'p'
+        key = 'h1'
 
         result = parse_key(key)
 
-        expected = {"tag":'p'}
+        expected = {"tag":'h1'}
 
-        self.assertEqual(result['tag'], expected)
+        self.assertEqual(result, expected)
 
     def test_key_parser_with_a_css_class(self):
 
@@ -205,9 +205,9 @@ class TestListNode(unittest.TestCase):
 
         result = parse_key(key)
 
-        expected = {"tag":'p', "class": ['my-class']}
+        expected = {"tag":'p', "classes": ['my-class']}
 
-        self.assertEqual(result['tag'], expected)
+        self.assertEqual(result, expected)
 
     def test_key_parser_with_a_css_id(self):
 
@@ -217,7 +217,7 @@ class TestListNode(unittest.TestCase):
 
         expected = {"tag":'p', "ids": ['my-id']}
 
-        self.assertEqual(result['tag'], expected)
+        self.assertEqual(result, expected)
 
     def test_key_parser_with_multiple_attrs(self):
 
@@ -227,4 +227,4 @@ class TestListNode(unittest.TestCase):
 
         expected = {"tag":'p', "ids": ['my-id', 'my_id1'], "classes": ['my-class', 'my_class1']}
 
-        self.assertEqual(result['tag'], expected)
+        self.assertEqual(result, expected)
