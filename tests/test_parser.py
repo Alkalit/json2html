@@ -1,10 +1,9 @@
 import unittest
 
-from ..parser import Parser, Node, ListNode
+from ..parser import Parser, Node, ListNode, parse_key
 
 
 class TestParser(unittest.TestCase):
-
 
     def test_escape_inner_html(self):
 
@@ -189,3 +188,43 @@ class TestListNode(unittest.TestCase):
         expected = '<ul><li><h1>Hi there!</h1><h2>How do you do?</h2></li><li><h3>a title</h3><div>a content</div></li></ul>'
 
         self.assertEqual(rendered, expected)
+
+    def test_key_parser_with_no_identety(self):
+
+        key = 'p'
+
+        result = parse_key(key)
+
+        expected = {"tag":'p'}
+
+        self.assertEqual(result['tag'], expected)
+
+    def test_key_parser_with_a_css_class(self):
+
+        key = 'p.my-class'
+
+        result = parse_key(key)
+
+        expected = {"tag":'p', "class": ['my-class']}
+
+        self.assertEqual(result['tag'], expected)
+
+    def test_key_parser_with_a_css_id(self):
+
+        key = 'p#my-id'
+
+        result = parse_key(key)
+
+        expected = {"tag":'p', "ids": ['my-id']}
+
+        self.assertEqual(result['tag'], expected)
+
+    def test_key_parser_with_multiple_attrs(self):
+
+        key = 'p.my-class#my-id.my_class1#my_id1'
+
+        result = parse_key(key)
+
+        expected = {"tag":'p', "ids": ['my-id', 'my_id1'], "classes": ['my-class', 'my_class1']}
+
+        self.assertEqual(result['tag'], expected)
