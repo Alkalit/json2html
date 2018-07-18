@@ -1,6 +1,7 @@
 import json
 import abc
 
+from html import escape
 from collections import OrderedDict
 
 
@@ -74,8 +75,11 @@ class Node(BaseNode):
 
         for tag, content in self.dict_of_tags.items():
 
-            if  isinstance(content, ListNode):
+            if isinstance(content, ListNode):
                 content = content.render()
+
+            elif isinstance(content, str):
+                content = escape(content)
 
             snippet = self.tag_tmp.format(tag=tag, content=content)
             arr.append(snippet)
