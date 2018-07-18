@@ -189,6 +189,9 @@ class TestListNode(unittest.TestCase):
 
         self.assertEqual(rendered, expected)
 
+
+class TestKeyParser(unittest.TestCase):
+
     def test_key_parser_with_no_identety(self):
 
         key = 'h1'
