@@ -29,7 +29,7 @@ class TestParser(unittest.TestCase):
             }
         """
 
-        expected = """<p class="my-class" id="my-id">hello</p><p class="my-class1 my-class2">example</p>"""
+        expected = """<p class="my-class" id="my-id">hello</p><p class="my-class1 my-class2" >example</p>"""
 
         json2html_parser = Parser()
         parsed = json2html_parser.parse(json_doc)
