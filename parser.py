@@ -3,13 +3,40 @@ import abc
 import re
 
 from html import escape
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
-TAG = r'^[a-z][a-z_0-9]*'
-CSS_SELECTOR = r"[.#][a-z1-9][a-z0-9_-]*"
 
-tag_regex = re.compile(TAG)
-css_selector_regex = re.compile(CSS_SELECTOR)
+TAG_REGEX = r"^[a-z][a-z_0-9]*"
+ID_REGEX = r"#[a-z1-9][a-z0-9_-]*"
+CLASS_REGEX = r"\.[a-z1-9][a-z0-9_-]*"
+
+IDENTIFICATOR = r"\.|#"
+
+TOKEN_SPECIFICATION = [
+    ('TAG', TAG_REGEX),        # AN HTML TAG
+    ('ID', ID_REGEX),          # A CSS ID
+    ('CLASS', CLASS_REGEX),    # A CSS class
+]
+
+TOKEN_REGEX = "|".join('(?P<%s>%s)' % pair for pair in TOKEN_SPECIFICATION)
+
+TOKEN_PATTERN = re.compile(TOKEN_REGEX, re.I)
+IDENTIFICATOR_PATTERN = re.compile(IDENTIFICATOR, re.I)
+
+KeyToken = namedtuple('KeyToken', ['type', 'value'])
+
+def tokenize_key(key):
+
+    line_num = 1
+    line_start = 0
+
+    for match_object in TOKEN_PATTERN.finditer(key):
+        type_ = match_object.lastgroup
+        value = match_object.group(type_)
+
+        column = match_object.start() - line_start
+
+        yield KeyToken(type_, value)
 
 def parse_key(key):
 
@@ -127,28 +154,35 @@ class Node(BaseNode):
             elif isinstance(content, str):
                 content = escape(content)
 
-            # import ipdb; ipdb.set_trace()
-            parsed_tag = parse_key(tag)
+            ids = ''
+            classes = ''
 
-            if parsed_tag['tag'] != tag:
-                ids = parsed_tag.get('ids', '')
-                classes = parsed_tag.get('classes', '')
+            # в противном случае будем парсить каждый тег в json-объекте
+            if IDENTIFICATOR_PATTERN.search(tag):
+
+                for token in tokenize_key(tag):
+                    if token.type == 'TAG' and token.value != tag:
+                        tag = token.value
+
+                    elif token.type == 'ID':
+                        # ids.append(token.value[1:])
+                        ids = " ".join([ids, token.value[1:]])
+
+                    elif token.type == 'CLASS':
+                        # classes.append(token.value[1:])
+                        classes = " ".join([classes, token.value[1:]])
 
                 if classes:
-                    classes = "class=\"{}\"".format(" ".join(classes))
+                    classes = "class=\"{}\"".format(classes.strip())
 
                 if ids:
-                    ids = "id=\"{}\"".format(" ".join(ids))
+                    ids = "id=\"{}\"".format(ids.strip())
 
-                closing_tag = parsed_tag['tag']
-                opening_tag = " ".join([closing_tag, classes, ids])
-            else:
-                opening_tag = tag
-                closing_tag = tag
+            closing_tag = tag
+            opening_tag = " ".join([tag, classes, ids])
 
-            snippet = self.tag_tmp.format(opening_tag=opening_tag, content=content, closing_tag=closing_tag)
+            snippet = self.tag_tmp.format(opening_tag=opening_tag.strip(), content=content, closing_tag=closing_tag)
             arr.append(snippet)
-
 
         return ''.join(arr)
 
