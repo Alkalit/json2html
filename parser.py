@@ -38,45 +38,6 @@ def tokenize_key(key):
 
         yield KeyToken(type_, value)
 
-def parse_key(key):
-
-    result = {}
-
-    matched_tag = tag_regex.match(key)
-
-    if not matched_tag:
-        raise Exception("The key \"{key}\" is an invalid key".format(key))
-
-    tag = matched_tag.group()
-
-    # далее ищем классы и айдишники
-    key = key[matched_tag.end():]
-
-    selectors = css_selector_regex.finditer(key)
-
-    ids = []
-    classes = []
-
-    for matcher in selectors:
-        select = matcher.group()
-
-        if select.startswith('.'):
-            classes.append(select[1:])
-        elif select.startswith('#'):
-            ids.append(select[1:])
-        else:
-            pass # TODO should I deal with it?
-
-    # import ipdb; ipdb.set_trace()
-    result['tag'] = tag
-
-    if classes:
-        result['classes'] = classes
-    if ids:
-        result['ids'] = ids
-
-    return result
-
 
 class MyCustomDecoder(json.JSONDecoder):
 

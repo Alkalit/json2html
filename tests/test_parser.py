@@ -1,6 +1,6 @@
 import unittest
 
-from ..parser import Parser, Node, ListNode, parse_key
+from ..parser import Parser, Node, ListNode, tokenize_key, KeyToken
 
 
 class TestParser(unittest.TestCase):
@@ -190,44 +190,44 @@ class TestListNode(unittest.TestCase):
         self.assertEqual(rendered, expected)
 
 
-# class TestKeyParser(unittest.TestCase):
+class TestKeyParser(unittest.TestCase):
 
-#     def test_key_parser_with_no_identety(self):
+    def test_key_parser_with_no_identety(self):
 
-#         key = 'h1'
+        key = 'h1'
 
-#         result = parse_key(key)
+        result = list(tokenize_key(key))
 
-#         expected = {"tag":'h1'}
+        expected = KeyToken("TAG", "h1")
 
-#         self.assertEqual(result, expected)
+        self.assertEqual(result, [expected])
 
-#     def test_key_parser_with_a_css_class(self):
+    def test_key_parser_with_a_css_class(self):
 
-#         key = 'p.my-class'
+        key = 'p.my-class'
 
-#         result = parse_key(key)
+        result = list(tokenize_key(key))
 
-#         expected = {"tag":'p', "classes": ['my-class']}
+        expected = [KeyToken("TAG", "p"), KeyToken("CLASS", ".my-class")]
 
-#         self.assertEqual(result, expected)
+        self.assertEqual(result, expected)
 
-#     def test_key_parser_with_a_css_id(self):
+    def test_key_parser_with_a_css_id(self):
 
-#         key = 'p#my-id'
+        key = 'p#my-id'
 
-#         result = parse_key(key)
+        result = list(tokenize_key(key))
 
-#         expected = {"tag":'p', "ids": ['my-id']}
+        expected = [KeyToken("TAG", "p"), KeyToken("ID", "#my-id")]
 
-#         self.assertEqual(result, expected)
+        self.assertEqual(result, expected)
 
-#     def test_key_parser_with_multiple_attrs(self):
+    def test_key_parser_with_multiple_attrs(self):
 
-#         key = 'p.my-class#my-id.my_class1#my_id1'
+        key = 'p.my-class#my-id.my_class1#my_id1'
 
-#         result = parse_key(key)
+        result = list(tokenize_key(key))
 
-#         expected = {"tag":'p', "ids": ['my-id', 'my_id1'], "classes": ['my-class', 'my_class1']}
+        expected = [KeyToken('TAG', 'p'), KeyToken('CLASS', '.my-class'), KeyToken('ID', '#my-id'), KeyToken('CLASS', '.my_class1'), KeyToken('ID', '#my_id1')]
 
-#         self.assertEqual(result, expected)
+        self.assertEqual(result, expected)
