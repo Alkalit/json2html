@@ -6,14 +6,12 @@ from html import escape
 from collections import OrderedDict
 
 TAG = r'^[a-z][a-z_0-9]*'
-CSS_SELECTOR = r"[.#][a-z][a-z0-9_-]*"
+CSS_SELECTOR = r"[.#][a-z1-9][a-z0-9_-]*"
 
 tag_regex = re.compile(TAG)
 css_selector_regex = re.compile(CSS_SELECTOR)
 
 def parse_key(key):
-
-    # Не гуру регулярок, поэтому парсим полу-вручную
 
     result = {}
 
